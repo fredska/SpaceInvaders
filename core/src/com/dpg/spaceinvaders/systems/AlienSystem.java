@@ -16,20 +16,19 @@ public class AlienSystem extends IteratingSystem {
 	private static final Family family = Family
 			.all(AlienComponent.class, StateComponent.class, TransformComponent.class, MovementComponent.class).get();
 
-	private float accelX = 0.0f;
-	private World world;
+//	private float accelX = 0.0f;
+//	private World world;
 
 	private ComponentMapper<AlienComponent> am;
 	private ComponentMapper<StateComponent> sm;
 	private ComponentMapper<TransformComponent> tm;
 	private ComponentMapper<MovementComponent> mm;
 
-	private float timeSinceDirectionChange = 0.0f;
 
 	public AlienSystem(World world) {
 		super(family);
 
-		this.world = world;
+//		this.world = world;
 		am = ComponentMapper.getFor(AlienComponent.class);
 		sm = ComponentMapper.getFor(StateComponent.class);
 		tm = ComponentMapper.getFor(TransformComponent.class);
@@ -43,7 +42,7 @@ public class AlienSystem extends IteratingSystem {
 		MovementComponent mov = mm.get(entity);
 		AlienComponent alien = am.get(entity);
 
-		timeSinceDirectionChange += deltaTime;
+		alien.timeSinceBorderCollision += deltaTime;
 
 		if (state.get() != DefenderComponent.STATE_HIT) {
 			float direction = alien.direction ? 1 : -1;
@@ -51,11 +50,12 @@ public class AlienSystem extends IteratingSystem {
 		}
 
 		final float AlienBoundLimit = AlienComponent.WIDTH;
-		if ((timeSinceDirectionChange > 1.5f)
+		if ((alien.timeSinceBorderCollision >= 1 / AlienComponent.MOVE_VELOCITY)
 				&& (t.pos.x - AlienBoundLimit < 0 || t.pos.x > World.WORLD_WIDTH - AlienBoundLimit)) {
+
 			alien.direction = !alien.direction;
 			t.pos.y -= 0.5f;
-			timeSinceDirectionChange = 0f;
+			alien.timeSinceBorderCollision = 0f;
 		}
 
 	}

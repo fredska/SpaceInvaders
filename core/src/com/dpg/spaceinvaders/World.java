@@ -41,9 +41,9 @@ public class World {
 		Entity player = createPlayer();
 		createCamera(player);
 		
-		for(int y = 0; y < 5; y++){
-			for(int x = 0; x < 4; x++){
-				createAlien(new Vector2(2*x + 1, 14f - y), true);
+		for(int y = 0; y < 10; y++){
+			for(int x = 0; x < 8; x++){
+				createAlien(new Vector2(x + 1, 14f - (y*0.5f)), true);
 			}
 		}
 		

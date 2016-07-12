@@ -11,10 +11,11 @@ public class AlienComponent implements Component{
 	// False for moving to the left; true for right
 	public boolean direction = false; 
 	
-	public static final float WIDTH = 1f;
-	public static final float HEIGHT = 1f;
+	public static final float WIDTH = .25f;
+	public static final float HEIGHT = .25f;
 
-	public static final float MOVE_VELOCITY = 3f;
+	public static final float MOVE_VELOCITY = 2.5f;
 
+	public float timeSinceBorderCollision = 0f;
 	
 }
