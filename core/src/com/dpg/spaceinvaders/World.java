@@ -7,14 +7,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.dpg.spaceinvaders.assets.Assets;
-import com.dpg.spaceinvaders.components.AlienComponent;
-import com.dpg.spaceinvaders.components.BoundsComponent;
-import com.dpg.spaceinvaders.components.CameraComponent;
-import com.dpg.spaceinvaders.components.DefenderComponent;
-import com.dpg.spaceinvaders.components.MovementComponent;
-import com.dpg.spaceinvaders.components.StateComponent;
-import com.dpg.spaceinvaders.components.TextureComponent;
-import com.dpg.spaceinvaders.components.TransformComponent;
+import com.dpg.spaceinvaders.components.*;
 import com.dpg.spaceinvaders.systems.RenderingSystem;
 
 public class World {
@@ -100,7 +93,7 @@ public class World {
 	private Entity createAlien(Vector2 pos, boolean direction){
 		Entity entity = new Entity();
 		
-//		AnimationComponent animation = new AnimationComponent();
+		AnimationComponent animation = new AnimationComponent();
 		AlienComponent alien = new AlienComponent();
 		BoundsComponent bounds = new BoundsComponent();
 		MovementComponent movement = new MovementComponent();
@@ -109,7 +102,8 @@ public class World {
 		TextureComponent texture = new TextureComponent();
 		
 		//Implement Animation here
-		
+		animation.animations.put(AlienComponent.STATE_HIT, Assets.alienExplosion);
+
 		alien.direction = direction;
 		
 		bounds.bounds.width = AlienComponent.WIDTH;
@@ -121,7 +115,7 @@ public class World {
 		
 		state.set(AlienComponent.STATE_MOVING);
 		
-//		entity.add(animation);
+		entity.add(animation);
 		entity.add(alien);
 		entity.add(bounds);
 		entity.add(movement);

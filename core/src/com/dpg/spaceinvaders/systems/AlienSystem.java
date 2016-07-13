@@ -5,11 +5,8 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.dpg.spaceinvaders.World;
-import com.dpg.spaceinvaders.components.AlienComponent;
-import com.dpg.spaceinvaders.components.DefenderComponent;
-import com.dpg.spaceinvaders.components.MovementComponent;
-import com.dpg.spaceinvaders.components.StateComponent;
-import com.dpg.spaceinvaders.components.TransformComponent;
+import com.dpg.spaceinvaders.assets.Assets;
+import com.dpg.spaceinvaders.components.*;
 
 public class AlienSystem extends IteratingSystem {
 
