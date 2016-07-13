@@ -17,5 +17,8 @@ public class AlienComponent implements Component{
 	public static final float MOVE_VELOCITY = 1f;
 
 	public float timeSinceBorderCollision = 0f;
+
+	public static final float DEATH_ANIMATION_LENGTH = 0.9f;
+	public float timeToDeathAnimFinish = 0f;
 	
 }

@@ -16,6 +16,6 @@ public class DefenderComponent implements Component{
 	public static final float MOVE_VELOCITY = 4.5f;
 
 	/* Lower value is faster rate of fire */
-	public static final float RATE_OF_FIRE = 0.25f;
+	public static final float RATE_OF_FIRE = 0.05f;
 
 }

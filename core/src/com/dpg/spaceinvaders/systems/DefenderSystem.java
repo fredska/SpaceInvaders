@@ -82,29 +82,33 @@ public class DefenderSystem extends IteratingSystem{
 	}
 
 	public Entity createBullet(Vector2 startPos){
-		Entity bullet = new Entity();
+		Entity missile = new Entity();
 
 		BoundsComponent bounds = new BoundsComponent();
 		MovementComponent vel = new MovementComponent();
 		TransformComponent pos = new TransformComponent();
 		TextureComponent texture = new TextureComponent();
-		MissileComponent missile = new MissileComponent();
+		MissileComponent missileComponent = new MissileComponent();
+		StateComponent state = new StateComponent();
 
 		pos.pos.set(startPos, 0);
 
 		vel.velocity.set(0f, 10f);
 
-		bounds.bounds.set(0,0,0.5f, 2f);
+		bounds.bounds.set(0,0,MissileComponent.WIDTH, MissileComponent.HEIGHT);
 
 		texture.region = new TextureRegion(Assets.static_Bullet);
 
-		bullet.add(bounds);
-		bullet.add(vel);
-		bullet.add(pos);
-		bullet.add(texture);
-		bullet.add(missile);
+		state.set(MissileComponent.STATE_MOVING);
 
-		return bullet;
+		missile.add(bounds);
+		missile.add(vel);
+		missile.add(pos);
+		missile.add(texture);
+		missile.add(missileComponent);
+		missile.add(state);
+
+		return missile;
 
 	}
 

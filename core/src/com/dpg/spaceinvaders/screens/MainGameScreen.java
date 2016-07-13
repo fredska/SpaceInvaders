@@ -1,6 +1,9 @@
 package com.dpg.spaceinvaders.screens;
 
 import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -9,6 +12,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.dpg.spaceinvaders.SpaceInvadersGame;
 import com.dpg.spaceinvaders.World;
+import com.dpg.spaceinvaders.components.*;
 import com.dpg.spaceinvaders.systems.AlienSystem;
 import com.dpg.spaceinvaders.systems.AnimationSystem;
 import com.dpg.spaceinvaders.systems.BoundsSystem;
@@ -149,6 +153,11 @@ public class MainGameScreen extends ScreenAdapter {
 		engine.getSystem(DefenderSystem.class).setAccelX(accelX);
 		engine.getSystem(DefenderSystem.class).setIsFiring(fireMissile);
 
+		//Check if all aliens are gone
+		ImmutableArray<Entity> aliens = engine.getEntitiesFor(Family.all(AlienComponent.class, BoundsComponent.class,MovementComponent.class, TransformComponent.class, StateComponent.class).get());
+		if(aliens.size() == 0){
+			world.state = World.WORLD_STATE_GAME_OVER;
+		}
 		if (world.state == World.WORLD_STATE_GAME_OVER) {
 			state = GAME_OVER;
 			pauseSystems();

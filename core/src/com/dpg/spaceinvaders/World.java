@@ -112,14 +112,14 @@ public class World {
 		
 		alien.direction = direction;
 		
-		bounds.bounds.width = DefenderComponent.WIDTH;
-		bounds.bounds.height = DefenderComponent.HEIGHT;
+		bounds.bounds.width = AlienComponent.WIDTH;
+		bounds.bounds.height = AlienComponent.HEIGHT;
 		
 		position.pos.set(pos.x, pos.y, 0f);
 		
 		texture.region = new TextureRegion(Assets.static_Alien);
 		
-		state.set(DefenderComponent.STATE_NONE);
+		state.set(AlienComponent.STATE_MOVING);
 		
 //		entity.add(animation);
 		entity.add(alien);

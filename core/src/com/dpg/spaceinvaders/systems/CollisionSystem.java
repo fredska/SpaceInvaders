@@ -25,17 +25,16 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.dpg.spaceinvaders.World;
-import com.dpg.spaceinvaders.components.BoundsComponent;
-import com.dpg.spaceinvaders.components.MovementComponent;
-import com.dpg.spaceinvaders.components.StateComponent;
-import com.dpg.spaceinvaders.components.TransformComponent;
+import com.dpg.spaceinvaders.components.*;
+import javafx.geometry.Bounds;
 
 public class CollisionSystem extends EntitySystem {
 	private ComponentMapper<BoundsComponent> bm;
 	private ComponentMapper<MovementComponent> mm;
 	private ComponentMapper<StateComponent> sm;
 	private ComponentMapper<TransformComponent> tm;
-	
+
+
 	public static interface CollisionListener {		
 		public void jump ();
 		public void highJump ();
@@ -47,12 +46,9 @@ public class CollisionSystem extends EntitySystem {
 	private World world;
 	private CollisionListener listener;
 	private Random rand = new Random();
-	private ImmutableArray<Entity> bobs;
-	private ImmutableArray<Entity> coins;
-	private ImmutableArray<Entity> squirrels;
-	private ImmutableArray<Entity> springs;
-	private ImmutableArray<Entity> castles;
-	private ImmutableArray<Entity> platforms;
+
+	private ImmutableArray<Entity> aliens;
+	private ImmutableArray<Entity> missiles;
 	
 	public CollisionSystem(World world, CollisionListener listener) {
 		this.world = world;
@@ -67,105 +63,34 @@ public class CollisionSystem extends EntitySystem {
 	@Override
 	public void addedToEngine(Engine engine) {
 		this.engine = engine;
-		/*
-		bobs = engine.getEntitiesFor(Family.all(BobComponent.class, BoundsComponent.class, TransformComponent.class, StateComponent.class).get());
-		coins = engine.getEntitiesFor(Family.all(CoinComponent.class, BoundsComponent.class).get());
-		squirrels = engine.getEntitiesFor(Family.all(SquirrelComponent.class, BoundsComponent.class).get());
-		springs = engine.getEntitiesFor(Family.all(SpringComponent.class, BoundsComponent.class, TransformComponent.class).get());
-		castles = engine.getEntitiesFor(Family.all(CastleComponent.class, BoundsComponent.class).get());
-		platforms = engine.getEntitiesFor(Family.all(PlatformComponent.class, BoundsComponent.class, TransformComponent.class).get());
-		*/
+
+		aliens = engine.getEntitiesFor(Family.all(AlienComponent.class, BoundsComponent.class,MovementComponent.class, TransformComponent.class, StateComponent.class).get());
+		missiles = engine.getEntitiesFor(Family.all(MissileComponent.class, BoundsComponent.class, MovementComponent.class, TransformComponent.class, StateComponent.class).get());
 	}
 	
 	@Override
 	public void update(float deltaTime) {
-		/*
-		BobSystem bobSystem = engine.getSystem(BobSystem.class);
-		PlatformSystem platformSystem = engine.getSystem(PlatformSystem.class);
-		
-		for (int i = 0; i < bobs.size(); ++i) {
-			Entity bob = bobs.get(i);
-			
-			StateComponent bobState = sm.get(bob);
-			
-			if (bobState.get() == BobComponent.STATE_HIT) {
-				continue;
+		for(Entity missile : missiles){
+			StateComponent mState = missile.getComponent(StateComponent.class);
+			BoundsComponent mBounds = missile.getComponent(BoundsComponent.class);
+			//Missile entities should be off screen in 10 sec guaranteed
+			//TODO: Setup math to calculate time till offscreen + 50% overhead
+			if(mState.time >= 2f){
+				getEngine().removeEntity(missile);
 			}
-			
-			MovementComponent bobMov = mm.get(bob);
-			BoundsComponent bobBounds = bm.get(bob);
-			
-			if (bobMov.velocity.y < 0.0f) {
-				TransformComponent bobPos = tm.get(bob);
-				
-				for (int j = 0; j < platforms.size(); ++j) {
-					Entity platform = platforms.get(j);
-					
-					TransformComponent platPos = tm.get(platform);
-					
-					if (bobPos.pos.y > platPos.pos.y) {
-						BoundsComponent platBounds = bm.get(platform);
-						
-						if (bobBounds.bounds.overlaps(platBounds.bounds)) {
-							bobSystem.hitPlatform(bob);
-							listener.jump();
-							if (rand.nextFloat() > 0.5f) {
-								platformSystem.pulverize(platform);
-							}
-							
-							break;
-						}
-					}
-				}
-				
-				for (int j = 0; j < springs.size(); ++j) {
-					Entity spring = springs.get(j);
-					
-					TransformComponent springPos = tm.get(spring);
-					BoundsComponent springBounds = bm.get(spring);
-					
-					if (bobPos.pos.y > springPos.pos.y) {
-						if (bobBounds.bounds.overlaps(springBounds.bounds)) {
-							bobSystem.hitSpring(bob);
-							listener.highJump();
-						}
-					} 
-				}
-			};
+			if(mState.get() == MissileComponent.STATE_MOVING)
+			{
+				for(Entity alien : aliens){
+					BoundsComponent aBounds = alien.getComponent(BoundsComponent.class);
+					StateComponent aState = alien.getComponent(StateComponent.class);
+					if(aState.get() == AlienComponent.STATE_MOVING && aBounds.bounds.overlaps(mBounds.bounds)){
 
-			for (int j = 0; j < squirrels.size(); ++j) {
-				Entity squirrel = squirrels.get(j);
-				
-				BoundsComponent squirrelBounds = bm.get(squirrel);
-				
-				if (squirrelBounds.bounds.overlaps(bobBounds.bounds)) {
-					bobSystem.hitSquirrel(bob);
-					listener.hit();
-				}
-			}
-			
-			for (int j = 0; j < coins.size(); ++j) {
-				Entity coin = coins.get(j);
-				
-				BoundsComponent coinBounds = bm.get(coin);
-				
-				if (coinBounds.bounds.overlaps(bobBounds.bounds)) {
-					engine.removeEntity(coin);
-					listener.coin();
-					world.score += CoinComponent.SCORE;
-				}
-			}
-			
-			for (int j = 0; j < castles.size(); ++j) {
-				Entity castle = castles.get(j);
-				
-				BoundsComponent castleBounds = bm.get(castle);
-				
-				if (castleBounds.bounds.overlaps(bobBounds.bounds)) {
-					world.state = World.WORLD_STATE_NEXT_LEVEL;
+						aState.set(AlienComponent.STATE_HIT);
+						getEngine().removeEntity(missile);
+						break;
+					}
 				}
 			}
 		}
-		*/
 	}
 }

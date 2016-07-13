@@ -8,4 +8,7 @@ import com.badlogic.ashley.core.Component;
 public class MissileComponent implements Component {
     public static final float WIDTH = 0.1f;
     public static final float HEIGHT = 0.5f;
+
+    public static final int STATE_MOVING = 0;
+    public static final int STATE_HIT = 1;
 }
