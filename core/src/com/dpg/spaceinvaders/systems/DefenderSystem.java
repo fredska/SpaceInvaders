@@ -4,11 +4,11 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.dpg.spaceinvaders.World;
-import com.dpg.spaceinvaders.components.DefenderComponent;
-import com.dpg.spaceinvaders.components.MovementComponent;
-import com.dpg.spaceinvaders.components.StateComponent;
-import com.dpg.spaceinvaders.components.TransformComponent;
+import com.dpg.spaceinvaders.assets.Assets;
+import com.dpg.spaceinvaders.components.*;
 
 public class DefenderSystem extends IteratingSystem{
 	private static final Family family = Family.all(DefenderComponent.class,
@@ -17,6 +17,9 @@ public class DefenderSystem extends IteratingSystem{
 			MovementComponent.class).get();
 	
 	private float accelX = 0.0f;
+	private boolean isFiring = false;
+	private float timeSinceLastFire = 0f;
+
 	private World world;
 	
 	private ComponentMapper<DefenderComponent> dm;
@@ -37,6 +40,7 @@ public class DefenderSystem extends IteratingSystem{
 	public void setAccelX(float accelX){
 		this.accelX = accelX;
 	}
+	public void setIsFiring(boolean isFiring){this.isFiring = isFiring;}
 	
 	@Override
 	public void update(float deltaTime){
@@ -66,6 +70,42 @@ public class DefenderSystem extends IteratingSystem{
 		if(t.pos.x > World.WORLD_WIDTH - defenderBoundLimit){
 			t.pos.x = World.WORLD_WIDTH - defenderBoundLimit;
 		}
+
+		timeSinceLastFire += delta;
+		if(isFiring && timeSinceLastFire >= DefenderComponent.RATE_OF_FIRE){
+			System.out.println("Firing missile");
+			isFiring = false;
+			timeSinceLastFire = 0f;
+			getEngine().addEntity(createBullet(new Vector2(t.pos.x, t.pos.y)));
+		}
 		
 	}
+
+	public Entity createBullet(Vector2 startPos){
+		Entity bullet = new Entity();
+
+		BoundsComponent bounds = new BoundsComponent();
+		MovementComponent vel = new MovementComponent();
+		TransformComponent pos = new TransformComponent();
+		TextureComponent texture = new TextureComponent();
+		MissileComponent missile = new MissileComponent();
+
+		pos.pos.set(startPos, 0);
+
+		vel.velocity.set(0f, 10f);
+
+		bounds.bounds.set(0,0,0.5f, 2f);
+
+		texture.region = new TextureRegion(Assets.static_Bullet);
+
+		bullet.add(bounds);
+		bullet.add(vel);
+		bullet.add(pos);
+		bullet.add(texture);
+		bullet.add(missile);
+
+		return bullet;
+
+	}
+
 }

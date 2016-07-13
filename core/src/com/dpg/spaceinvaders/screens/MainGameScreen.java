@@ -128,8 +128,12 @@ public class MainGameScreen extends ScreenAdapter {
 		ApplicationType appType = Gdx.app.getType();
 
 		float accelX = 0.0f;
+		boolean fireMissile = false;
 		if (appType == ApplicationType.Android || appType == ApplicationType.iOS) {
 			accelX = Gdx.input.getAccelerometerX();
+			if(Gdx.input.isTouched()){
+				fireMissile = true;
+			}
 		} else {
 			if (Gdx.input.isKeyPressed(Keys.DPAD_LEFT)) {
 				accelX = 5f;
@@ -137,9 +141,14 @@ public class MainGameScreen extends ScreenAdapter {
 			if (Gdx.input.isKeyPressed(Keys.DPAD_RIGHT)) {
 				accelX = -5f;
 			}
+			if(Gdx.input.isKeyPressed(Keys.F)){
+				fireMissile = true;
+			}
 		}
 
 		engine.getSystem(DefenderSystem.class).setAccelX(accelX);
+		engine.getSystem(DefenderSystem.class).setIsFiring(fireMissile);
+
 		if (world.state == World.WORLD_STATE_GAME_OVER) {
 			state = GAME_OVER;
 			pauseSystems();

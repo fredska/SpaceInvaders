@@ -14,7 +14,7 @@ public class AlienComponent implements Component{
 	public static final float WIDTH = .25f;
 	public static final float HEIGHT = .25f;
 
-	public static final float MOVE_VELOCITY = 2.5f;
+	public static final float MOVE_VELOCITY = 1f;
 
 	public float timeSinceBorderCollision = 0f;
 	

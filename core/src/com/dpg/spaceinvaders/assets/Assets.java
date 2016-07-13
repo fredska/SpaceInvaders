@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.dpg.spaceinvaders.components.AlienComponent;
 import com.dpg.spaceinvaders.components.DefenderComponent;
+import com.dpg.spaceinvaders.components.MissileComponent;
 import com.dpg.spaceinvaders.systems.RenderingSystem;
 
 public class Assets {
@@ -38,9 +39,11 @@ public class Assets {
 				(int)(AlienComponent.HEIGHT / RenderingSystem.PIXELS_TO_METRES));
 		static_Alien = new Texture(alienPix);
 		
-		Pixmap bulletPix = new Pixmap(80, 50, Format.RGB888);
-		bulletPix.setColor(Color.RED);
-		bulletPix.drawRectangle(0, 0, 40, 30);
+		Pixmap bulletPix = new Pixmap((int)(MissileComponent.WIDTH / RenderingSystem.PIXELS_TO_METRES),
+				(int)(MissileComponent.HEIGHT / RenderingSystem.PIXELS_TO_METRES), Format.RGB888);
+		bulletPix.setColor(Color.CYAN);
+		bulletPix.drawRectangle(0, 0, (int)(MissileComponent.WIDTH / RenderingSystem.PIXELS_TO_METRES),
+				(int)(MissileComponent.HEIGHT / RenderingSystem.PIXELS_TO_METRES));
 		static_Bullet = new Texture(bulletPix);
 	}
 }
